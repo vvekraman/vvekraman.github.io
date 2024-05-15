@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Grade Calculator</h1>
+        <p>For Kathi ;)</p>
+        
+        <label for="max_score">Maximum score:</label>
+        <input type="number" id="max_score" value="25"><br>
+
+        <label for="score">Obtained score:</label>
+        <input type="number" id="score" value="18"><br>
+
+        <button onclick="runStatCompute()">Run</button>
+
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        // Create the data equivalent to the dataframe in Python
+        const column = ['LP', ...Array.from({ length: 16 }, (_, i) => 15 - i)];
+        const data = [
+            ['E', '1+', '1', '1-', '2+', '2', '2-', '3+', '3', '3-', '4+', '4', '4-', '5+', '5', '5-', '6'],
+            ['%', '100%', '95%', '90%', '85%', '80%', '75%', '70%', '65%', '60%', '55%', '50%', '40%', '30%', '20%', '10%', '0%']
+        ];
+
+        const percents = data[1].slice(1).map(percent => parseInt(percent) / 100);
+        const vals = Array.from({ length: 61 - 10 }, (_, i) => [10 + i, ...percents.map(p => (10 + i) * p)]);
+
+        const df = [data[0], data[1], ...vals];
+
+        // Function to find the column index
+        function getColumnIndex(df, colName) {
+            return df[0].indexOf(colName);
+        }
+
+        // Function to compute statistics
+        function statCompute(df, maxScore, score) {
+            const outputElement = document.getElementById('output');
+            const maxScoreIndex = df.findIndex(row => row[0] == maxScore);
+
+            
+            if (score > maxScore) {
+                outputElement.textContent = "Error: Invalid obtained score.";
+                return;
+            }
+
+            if (maxScoreIndex === -1) {
+                outputElement.textContent = "Error: Invalid maximum score.";
+                return;
+            }
+
+            const row = df[maxScoreIndex];
+            const columnIndex = row.findIndex((val, index) => index !== 0 && score >= val);
+
+            if (columnIndex === -1) {
+                outputElement.textContent = "Error: Score exceeds max score.";
+                return;
+            }
+
+            const lp = column[columnIndex]; // Corrected LP value
+            const e = df[0][columnIndex]; // Adjusted column index to match data structure
+            const percentage = df[1][columnIndex]; // Adjusted column index to match data structure
+
+            outputElement.textContent = `Selected score: >= ${row[columnIndex]} \nLP: ${lp} \nE: ${e} \nPercentage: ${percentage}`;
+        }
+
+        // Function to run stat compute with user input
+        function runStatCompute() {
+            const maxScore = parseInt(document.getElementById('max_score').value);
+            const score = parseInt(document.getElementById('score').value);
+            statCompute(df, maxScore, score);
+        }
+    </script>
+</body>
+</html>
