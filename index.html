@@ -31,7 +31,7 @@
         ];
 
         const percents = data[1].slice(1).map(percent => parseInt(percent) / 100);
-        const vals = Array.from({ length: 61 - 10 }, (_, i) => [10 + i, ...percents.map(p => (10 + i) * p)]);
+        const vals = Array.from({ length: 71 - 10 }, (_, i) => [10 + i, ...percents.map(p => (10 + i) * p)]);
 
         const df = [data[0], data[1], ...vals];
 
